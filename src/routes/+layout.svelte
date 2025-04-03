@@ -1,10 +1,9 @@
 <script lang="ts">
 	import '../style.css';
-	import '@fontsource-variable/nunito-sans';
 	import '@fontsource-variable/manrope';
+	import '@fontsource-variable/nunito-sans';
 
 	let showHamburgerMenu = false;
-
 	function setShowHamburgerMenu(show: boolean) {
 		showHamburgerMenu = show;
 	}
@@ -13,11 +12,7 @@
 <header class="navbar absolute z-2 flex justify-between border-b-2 border-(--border-color) p-4 sm:px-6">
 	<!-- Logo -->
 	<div class="flex items-center gap-2">
-		<!-- Alt1 -->
-		<a href="/"><img src="logo.png" alt="HabitZen Logo" width="150" /></a>
-
-		<!-- Alt2 -->
-		<!-- <img src="logo2.png" alt="HabitZen Logo" width="150" /> -->
+		<a href="/"><img src="logo.png" alt="HabitZen Logo" class="w-[140px] sm:w-[150px]" /></a>
 	</div>
 
 	<!-- Buttons for desktop -->
@@ -47,9 +42,8 @@
 
 <!-- Hamburger menu content -->
 <div
-	class="absolute flex {showHamburgerMenu
-		? ''
-		: 'hidden'} top-0 right-0 h-75 w-full border-b-2 border-(--border-color) bg-(--background-color) sm:hidden"
+	class="absolute flex {showHamburgerMenu ? '' : 'hidden'} 
+	top-0 right-0 h-75 w-full border-b-2 border-(--border-color) bg-(--background-color) sm:hidden"
 >
 	<div class="m-auto flex w-full flex-col items-center gap-6 p-8 pt-24">
 		<button class="btn btn-primary btn-outline btn-block">Register</button>
