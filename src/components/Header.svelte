@@ -6,6 +6,12 @@
 	function setShowHamburgerMenu(show: boolean) {
 		showHamburgerMenu = show;
 	}
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && showHamburgerMenu) {
+			setShowHamburgerMenu(false);
+		}
+	});
 </script>
 
 <header class="navbar absolute z-2 flex justify-between border-b-2 border-(--border-color) p-4 sm:px-6">
@@ -21,17 +27,42 @@
 	</div>
 
 	<!-- Hamburger menu icon for mobile -->
-	<label class="swap swap-rotate sm:hidden">
+	<label class="swap swap-rotate sm:hidden" aria-live="polite">
 		<!-- This hidden checkbox controls the state -->
-		<input type="checkbox" bind:checked={showHamburgerMenu} on:click={() => setShowHamburgerMenu(!showHamburgerMenu)} />
+		<input
+			type="checkbox"
+			bind:checked={showHamburgerMenu}
+			on:click={() => setShowHamburgerMenu(!showHamburgerMenu)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter') {
+					setShowHamburgerMenu(!showHamburgerMenu);
+				}
+			}}
+			tabindex="0"
+			aria-label={showHamburgerMenu ? 'Close menu' : 'Open menu'}
+		/>
 
 		<!-- Hamburger icon -->
-		<svg class="swap-off fill-current" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 512 512">
+		<svg
+			class="swap-off fill-current"
+			xmlns="http://www.w3.org/2000/svg"
+			width="36"
+			height="36"
+			viewBox="0 0 512 512"
+			aria-hidden="true"
+		>
 			<path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
 		</svg>
 
 		<!-- Close icon -->
-		<svg class="swap-on fill-current" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 512 512">
+		<svg
+			class="swap-on fill-current"
+			xmlns="http://www.w3.org/2000/svg"
+			width="36"
+			height="36"
+			viewBox="0 0 512 512"
+			aria-hidden="true"
+		>
 			<polygon
 				points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49"
 			/>

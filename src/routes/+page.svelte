@@ -1,6 +1,6 @@
 <div class="flex h-dvh p-8 sm:p-0">
 	<div
-		class="prose prose-sm sm:prose-base lg:prose-lg prose-h1:text-[2rem] sm:prose-h1:text-[2.5rem] lg:prose-h1:text-[3rem] m-auto flex flex-col items-center py-40"
+		class="prose prose-sm sm:prose-base lg:prose-lg prose-h1:text-[2rem] sm:prose-h1:text-[2.5rem] lg:prose-h1:text-[3rem] m-auto flex flex-col items-center py-36"
 	>
 		<!-- Landing page information -->
 		<h1 class="text-center">Build better habits and create balance with HabitZen.</h1>
