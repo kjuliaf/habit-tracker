@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
+
 	let showHamburgerMenu = false;
 	beforeNavigate(() => (showHamburgerMenu = false));
 
@@ -7,11 +9,14 @@
 		showHamburgerMenu = show;
 	}
 
-	document.addEventListener('keydown', (event) => {
-		if (event.key === 'Escape' && showHamburgerMenu) {
-			setShowHamburgerMenu(false);
-		}
-	});
+	// Close hamburger menu on ESC
+	if (browser) {
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && showHamburgerMenu) {
+				setShowHamburgerMenu(false);
+			}
+		});
+	}
 </script>
 
 <header class="navbar absolute z-2 flex justify-between border-b-2 border-(--border-color) p-4 sm:px-6">
@@ -73,7 +78,7 @@
 <!-- Hamburger menu content -->
 <div
 	class="absolute flex {showHamburgerMenu ? '' : 'hidden'} 
-	top-0 right-0 h-75 w-full border-b-2 border-(--border-color) bg-(--background-color) sm:hidden"
+	top-0 right-0 z-1 h-75 w-full border-b-2 border-(--border-color) bg-(--background-color) sm:hidden"
 >
 	<div class="m-auto flex w-full flex-col items-center gap-6 p-8 pt-24">
 		<a href="/register" class="btn btn-primary btn-outline btn-block">Register</a>

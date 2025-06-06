@@ -1,5 +1,5 @@
 <div class="flex h-dvh p-8 sm:p-0">
-	<div class="prose m-auto flex flex-col items-center py-36">
+	<div class="prose prose-sm sm:prose-base m-auto flex flex-col items-center py-36">
 		<h1>Welcome back</h1>
 		<!-- Login form -->
 		<form class="fieldset w-xs border-none bg-none">

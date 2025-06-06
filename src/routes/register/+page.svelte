@@ -1,10 +1,10 @@
 <div class="flex h-dvh p-8 sm:p-0">
-	<div class="prose m-auto flex flex-col items-center py-36">
+	<div class="prose-sm sm:prose-base m-auto flex flex-col items-center py-36">
 		<h1>Create accout</h1>
 		<!-- Register form -->
 		<form class="fieldset w-xs border-none bg-none">
-			<label for="name" class="fieldset-label">Name</label>
-			<input type="text" id="name" class="input" placeholder="Name" />
+			<label for="name" class="fieldset-label">First name</label>
+			<input type="text" id="name" class="input" placeholder="First name" />
 			<label for="email" class="fieldset-label">Email</label>
 			<input type="email" id="email" class="input" placeholder="Email" autocomplete="username" />
 			<label for="password" class="fieldset-label">Password</label>

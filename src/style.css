@@ -8,11 +8,11 @@
 	--font-headings: 'Manrope Variable', 'ui-sans-serif', 'system-ui', 'sans-serif';
 	--font-sans: 'Nunito Sans Variable', 'ui-sans-serif', 'system-ui', 'sans-serif';
 	--border-color: #d4d4d4;
-	--background-color: #f2f4f5;
+	--background-color: #f4f4f4;
 }
 
 html {
-	@apply prose-headings:font-(family-name:--font-headings) prose-headings:font-[600] bg-(--background-color) bg-[url('background.png')] bg-cover bg-no-repeat;
+	@apply prose-headings:font-(family-name:--font-headings) prose-headings:font-[500] scroll-smooth bg-(--background-color) bg-[url('background.png')] xl:bg-[length:100%_auto] bg-no-repeat;
 }
 
 @utility btn {
