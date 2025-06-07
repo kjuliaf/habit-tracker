@@ -1,7 +1,3 @@
-<script lang="ts">
-	import Header from '../../components/Header.svelte';
-</script>
-
 <div>
 	<!-- Landing page information -->
 	<div class="flex min-h-dvh flex-col p-8 sm:p-0">
