@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Header from '../components/Header.svelte';
+	import Header from '../../components/Header.svelte';
 </script>
 
-<Header />
-<div class="bg-[url('background.png')] bg-no-repeat xl:bg-[length:100%_auto]">
+<div>
 	<!-- Landing page information -->
 	<div class="flex min-h-dvh flex-col p-8 sm:p-0">
 		<div
