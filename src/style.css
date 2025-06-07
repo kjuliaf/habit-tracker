@@ -12,7 +12,7 @@
 }
 
 html {
-	@apply prose-headings:font-(family-name:--font-headings) prose-headings:font-[500] scroll-smooth bg-(--background-color) bg-[url('background.png')] xl:bg-[length:100%_auto] bg-no-repeat;
+	@apply prose-headings:font-(family-name:--font-headings) prose-headings:font-[500] scroll-smooth bg-(--background-color);
 }
 
 @utility btn {

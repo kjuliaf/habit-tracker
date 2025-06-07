@@ -1,6 +1,11 @@
-<div>
+<script lang="ts">
+	import Header from '../components/Header.svelte';
+</script>
+
+<Header />
+<div class="bg-[url('background.png')] bg-no-repeat xl:bg-[length:100%_auto]">
 	<!-- Landing page information -->
-	<div class="flex h-dvh flex-col p-8 sm:p-0">
+	<div class="flex min-h-dvh flex-col p-8 sm:p-0">
 		<div
 			class="prose prose-sm sm:prose-base lg:prose-lg prose-h1:text-[2rem] sm:prose-h1:text-[2.5rem] lg:prose-h1:text-[3rem] m-auto flex flex-col items-center py-36"
 		>

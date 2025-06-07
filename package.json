@@ -11,7 +11,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"db:generate": "drizzle-kit generate"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -20,7 +21,9 @@
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/typography": "^0.5.16",
+		"@types/pg": "^8.15.4",
 		"daisyui": "^5.0.12",
+		"drizzle-kit": "^0.31.1",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
@@ -37,7 +40,13 @@
 	"dependencies": {
 		"@fontsource-variable/manrope": "^5.2.5",
 		"@fontsource-variable/nunito-sans": "^5.2.5",
+		"@supabase/ssr": "^0.6.1",
+		"@supabase/supabase-js": "^2.50.0",
 		"@tailwindcss/vite": "^4.1.1",
+		"dotenv": "^16.5.0",
+		"drizzle-orm": "^0.44.2",
+		"pg": "^8.16.0",
+		"postgres": "^3.4.7",
 		"tailwindcss": "^4.1.1"
 	}
 }
