@@ -1,7 +1,8 @@
-import { db } from '$lib/db';
+/* import { db } from '$lib/db';
 
 export const load = async () => {
-	const profiles = await db.query.profileTable.findMany();
+	const habitLists = await db.query.habitLists.findMany();
 
-	return { profiles };
+	return { habitLists };
 };
+ */

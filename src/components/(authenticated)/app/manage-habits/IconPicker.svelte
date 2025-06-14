@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { iconRegistry } from '$lib/utils/iconRegistry.js';
 
-	export let selectedIcon = 'none';
+	export let icon = 'none';
 
-	$: currentIconConfig = iconRegistry[selectedIcon];
+	$: currentIconConfig = iconRegistry[icon];
 </script>
 
 <div>
@@ -26,9 +26,9 @@
 				{#each Object.entries(iconRegistry) as [iconKey, iconConfig]}
 					<div class="form-control">
 						<label class="label cursor-pointer">
-							<input type="radio" name="icon" class="sr-only" value={iconKey} bind:group={selectedIcon} />
+							<input type="radio" name="icon" class="sr-only" value={iconKey} bind:group={icon} />
 							<div
-								class="m-1 rounded-lg border-2 p-2 text-center transition-all {selectedIcon === iconKey
+								class="m-1 rounded-lg border-2 p-2 text-center transition-all {icon === iconKey
 									? 'border-primary bg-primary/10'
 									: 'border-base-300 hover:border-base-400'}"
 							>

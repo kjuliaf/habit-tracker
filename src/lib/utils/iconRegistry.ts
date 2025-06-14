@@ -53,7 +53,7 @@ export const iconRegistry: Record<string, IconConfig> = {
 		component: NotoVideoGame,
 		color: ''
 	},
-	none: {
+	'none': {
 		component: RadixIconsValueNone,
 		color: 'transparent'
 	}
