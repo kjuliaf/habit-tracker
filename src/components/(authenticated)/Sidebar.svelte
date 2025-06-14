@@ -1,19 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	// @ts-ignore
 	import TablerChecks from '~icons/tabler/checks';
-	// @ts-ignore
 	import TablerChartLine from '~icons/tabler/chart-line';
-	// @ts-ignore
 	import TablerStopwatch from '~icons/tabler/stopwatch';
-	// @ts-ignore
 	import TablerList from '~icons/tabler/list';
-	// @ts-ignore
 	import TablerUser from '~icons/tabler/user';
-	// @ts-ignore
-	import TablerLayoutSidebar from '~icons/tabler/layout-sidebar';
-	// @ts-ignore
-	import TablerArrowBarToLeft from '~icons/tabler/arrow-bar-to-left';
+	import MynauiSidebar from '~icons/mynaui/sidebar'
 	import { onMount } from 'svelte';
 
 	let hoverActive = false;
@@ -24,8 +16,8 @@
 		hoverActive = status;
 	}
 
-	function openMobileMenu() {
-		mobileMenuOpen = true;
+	function toggleOpenMobileMenu() {
+		mobileMenuOpen = !mobileMenuOpen;
 	}
 
 	function closeMobileMenu() {
@@ -61,21 +53,21 @@
 	});
 </script>
 
-<!-- For mobile -->
-<div class="fixed h-13 w-full px-4 py-3 md:hidden">
-	<button aria-label="Open sidebar menu" on:click={openMobileMenu}>
-		<TablerLayoutSidebar class="min-h-7 min-w-7 cursor-pointer text-gray-500" />
-	</button>
-</div>
-
 <!-- Backdrop - only shows on mobile when menu is open -->
 {#if mobileMenuOpen}
 	<button
-		class="fixed inset-0 z-1 bg-black opacity-50 transition-opacity duration-300 md:hidden"
+		class="fixed inset-0 z-2 bg-black opacity-20 transition-opacity duration-300 md:hidden"
 		on:click={closeMobileMenu}
 		aria-label="Close sidebar menu"
 	></button>
 {/if}
+
+<!-- For mobile -->
+<div class="fixed z-3 h-12 w-full border-b-[1.5px] border-(--border-color) bg-(--background-color) px-4 py-2.5 md:hidden">
+	<button aria-label="Open sidebar menu" on:click={toggleOpenMobileMenu}>
+		<MynauiSidebar class="min-h-7 min-w-7 cursor-pointer text-gray-500" />
+	</button>
+</div>
 
 <div
 	class="fixed h-full {hoverActive && isFullScreen
@@ -90,13 +82,7 @@
 >
 	<!-- Top section -->
 	<div>
-		<div class="h-13 w-full border-b-[1.5px] border-(--border-color) bg-(--background-color) px-4 py-3 md:hidden">
-			{#if mobileMenuOpen}
-				<button aria-label="Close sidebar menu" on:click={closeMobileMenu}>
-					<TablerArrowBarToLeft class="min-h-7 min-w-7 cursor-pointer text-gray-500" />
-				</button>
-			{/if}
-		</div>
+		<div class="h-12 w-full border-b-[1.5px] border-(--border-color) bg-(--background-color) px-4 py-3 md:hidden"></div>
 		<div>
 			<a
 				class="hover:text-primary flex cursor-pointer items-center gap-2.5 border-b-[1.5px] border-(--border-color) px-5 py-3 hover:bg-[#E1E5F6] {getActiveClasses(

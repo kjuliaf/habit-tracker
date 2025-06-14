@@ -2,12 +2,9 @@
 	let { data } = $props();
 	let user = data?.session?.user;
 	let firstName = user?.user_metadata?.first_name;
-	// @ts-ignore
-	import MdiChevronRight from '~icons/mdi/chevron-right';
-	// @ts-ignore
 	import FluentWeatherSunnyLow20Regular from '~icons/fluent/weather-sunny-low-20-regular';
-	// @ts-ignore
 	import MaterialSymbolsCheck from '~icons/material-symbols/check';
+	import Datepicker from '../../../components/(authenticated)/Datepicker.svelte';
 </script>
 
 <div class="flex flex-col items-center justify-center">
@@ -44,14 +41,13 @@
 								<MaterialSymbolsCheck class="mt-0.25 h-5 w-5" />
 							</div>
 						</div>
-						<p class="text-primary text-[0.75em]">1/1</p>
 					</div>
 					<div>
-						<div>Habit name</div>
-						<div class="text-xs opacity-60">Habit description</div>
+						<div>Drink a glass of water</div>
+						<div class="text-xs opacity-60">500/500 ml</div>
 					</div>
 					<div>
-						<MdiChevronRight class="h-7 w-7 text-gray-400" />
+						<button class="btn btn-square btn-ghost h-8 w-8 text-2xl text-gray-400">+</button>
 					</div>
 				</li>
 
@@ -68,14 +64,13 @@
 								role="progressbar"
 							></div>
 						</div>
-						<p class="text-[0.75em] opacity-50">1/2</p>
 					</div>
 					<div>
-						<div>Habit name</div>
-						<div class="text-xs opacity-60">Habit description</div>
+						<div>Go for a morning walk</div>
+						<div class="text-xs opacity-60">2/4 km</div>
 					</div>
 					<div>
-						<MdiChevronRight class="h-7 w-7 text-gray-400" />
+						<button class="btn btn-square btn-ghost h-8 w-8 text-2xl text-gray-400">+</button>
 					</div>
 				</li>
 
@@ -92,14 +87,13 @@
 								role="progressbar"
 							></div>
 						</div>
-						<p class="text-[0.75em] opacity-50">0/2</p>
 					</div>
 					<div>
-						<div>Habit name</div>
-						<div class="text-xs opacity-60">Habit description</div>
+						<div>Meditate</div>
+						<div class="text-xs opacity-60">0/15 minutes</div>
 					</div>
 					<div>
-						<MdiChevronRight class="h-7 w-7 text-gray-400" />
+						<button class="btn btn-square btn-ghost h-8 w-8 text-2xl text-gray-400">+</button>
 					</div>
 				</li>
 			</ul>
@@ -126,3 +120,5 @@
 		</div>
 	</div>
 </div>
+
+<Datepicker />

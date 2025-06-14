@@ -1,5 +1,4 @@
 <script lang="ts">
-	// @ts-ignore
 	import TablerLogout from '~icons/tabler/logout';
 </script>
 
