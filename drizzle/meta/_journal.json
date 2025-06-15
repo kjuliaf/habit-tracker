@@ -8,6 +8,20 @@
       "when": 1749932224763,
       "tag": "0000_normal_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749991934445,
+      "tag": "0001_legal_wild_child",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749992276788,
+      "tag": "0002_lush_emma_frost",
+      "breakpoints": true
     }
   ]
 }

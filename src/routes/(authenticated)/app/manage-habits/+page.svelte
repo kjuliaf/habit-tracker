@@ -8,6 +8,7 @@
 
 	import { onMount } from 'svelte';
 	import Sortable from 'sortablejs';
+	import { invalidateAll } from '$app/navigation';
 
 	let { data } = $props();
 	let habitsGroupedByList = data?.habitsGroupedByList || [];
@@ -42,6 +43,7 @@
 					const formData = new FormData();
 					formData.append('habitUpdates', JSON.stringify(habitUpdates));
 					await fetch('?/reorderHabits', { method: 'POST', body: formData });
+					await invalidateAll();
 				}
 			});
 		});

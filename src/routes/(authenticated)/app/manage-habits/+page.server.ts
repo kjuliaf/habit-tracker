@@ -43,6 +43,7 @@ export const actions = {
 				description: formData.get('description') as string,
 				targetValue: parseInt(formData.get('targetValue') as string),
 				unit: formData.get('unit') as string,
+				frequency: formData.get('frequency') as string,
 				days: JSON.parse(formData.get('days') as string),
 				displayOrder: nextDisplayOrder
 			};
@@ -94,6 +95,7 @@ export const actions = {
 				description: formData.get('description') as string,
 				targetValue: parseInt(formData.get('targetValue') as string),
 				unit: formData.get('unit') as string,
+				frequency: formData.get('frequency') as string,
 				days: JSON.parse(formData.get('days') as string)
 			};
 

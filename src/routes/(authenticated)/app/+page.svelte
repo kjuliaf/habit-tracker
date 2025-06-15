@@ -5,8 +5,20 @@
 	import FluentWeatherSunnyLow20Regular from '~icons/fluent/weather-sunny-low-20-regular';
 	import Datepicker from '../../../components/(authenticated)/Datepicker.svelte';
 	import { iconRegistry } from '$lib/utils/iconRegistry.js';
+	import HabitDetailModal from '../../../components/(authenticated)/app/HabitDetailModal.svelte';
 	let habitsGroupedByList = data?.habitsGroupedByList || [];
+
+	let dialog: HTMLDialogElement | null = $state(null);
+	let currentHabit: any = $state(null);
+	let selectedDate = $state(new Date());
+
+	function openHabitDetailModal(habit: any) {
+		currentHabit = habit;
+		dialog?.showModal();
+	}
 </script>
+
+<HabitDetailModal bind:dialog habit={currentHabit} date={selectedDate} />
 
 <div class="flex flex-col items-center justify-center">
 	<div
@@ -59,7 +71,10 @@
 									<div class="text-xs opacity-60">0/{habit.targetValue} {habit.unit}</div>
 								</div>
 								<div>
-									<button class="btn btn-square btn-ghost h-8 w-8 text-2xl text-gray-400">+</button>
+									<button
+										onclick={() => openHabitDetailModal(habit)}
+										class="btn btn-square btn-ghost h-8 w-8 text-2xl text-gray-400">+</button
+									>
 								</div>
 							</li>
 						{/each}

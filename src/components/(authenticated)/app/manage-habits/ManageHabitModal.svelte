@@ -11,8 +11,10 @@
 	let listId = $state<number>(habitLists[0]?.id || 0);
 	let targetValue = $state<number>(1);
 	let unit = $state<string>('times');
-	let isEveryday = $state(true);
-	let days = $state(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+
+	let frequency: string = $state('daily');
+
+	let days: string[] = $state([]);
 
 	$effect(() => {
 		if (editHabit || editHabit === null) {
@@ -22,9 +24,8 @@
 			listId = editHabit?.listId || habitLists[0]?.id || 0;
 			targetValue = editHabit?.targetValue || 1;
 			unit = editHabit?.unit || 'times';
-			days = editHabit?.days || ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-			isEveryday =
-				JSON.stringify(editHabit?.days) === JSON.stringify(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+			frequency = editHabit?.frequency || 'daily';
+			days = editHabit?.days || [];
 		}
 	});
 
@@ -38,16 +39,20 @@
 		{ key: 'sun', label: 'Sun' }
 	];
 
-	function toggleEveryday() {
-		isEveryday = true;
-		days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+	let frequencyOptions = [
+		{ key: 'daily', label: 'Daily' },
+		{ key: 'weekly', label: 'Weekly' },
+		{ key: 'monthly', label: 'Monthly' }
+	];
+
+	function setFrequency(frequencyOption: string) {
+		days = [];
+		frequency = frequencyOption;
 	}
 
 	function toggleWeekday(day: string) {
-		if (isEveryday) {
-			isEveryday = false;
-			days = [];
-		}
+		frequency = 'custom';
+
 		if (days.includes(day)) {
 			days = days.filter((d: string) => d !== day);
 		} else {
@@ -104,7 +109,7 @@
 			</div>
 
 			<div>
-				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Daily goal</legend>
+				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Goal</legend>
 				<div class="join w-full">
 					<input
 						name="targetValue"
@@ -115,46 +120,56 @@
 						required
 					/>
 					<select name="unit" class="select join-item w-40" bind:value={unit}>
-						<option value="times">times/day</option>
-						<option value="glasses">glasses/day</option>
-						<option value="ml">ml/day</option>
-						<option value="km">km/day</option>
+						<option value="times">times</option>
+						<option value="minutes">minutes</option>
+						<option value="pages">pages</option>
+						<option value="km">km</option>
+						<option value="steps">steps</option>
+						<option value="ml">ml</option>
+						<option value="glasses">glasses</option>
 					</select>
 				</div>
 			</div>
 
 			<div>
-				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Days</legend>
-				<fieldset class="overflow-hidden">
-					<div class="flex flex-wrap items-center gap-2">
+				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Frequency</legend>
+
+				<div class="items-cente flex flex-wrap gap-2">
+					{#each frequencyOptions as { key, label }}
 						<label class="cursor-pointer">
-							<input type="checkbox" class="sr-only" onchange={() => toggleEveryday()} />
-							<div class="btn btn-sm {isEveryday ? 'btn-primary' : 'btn-outline opacity-30'}">Everyday</div>
+							<input type="radio" class="sr-only" checked={frequency === key} onchange={() => setFrequency(key)} />
+							<div
+								class="btn btn-sm {frequency === key ? 'btn-primary' : 'btn-outline'} {frequency === 'custom'
+									? 'opacity-30'
+									: ''}"
+							>
+								{label}
+							</div>
 						</label>
-						<p class="mx-1 text-xs text-gray-500">or</p>
-						{#each weekdays as { key, label }}
-							<label class="cursor-pointer">
-								<input
-									type="checkbox"
-									class="sr-only"
-									checked={days.includes(key)}
-									onchange={() => toggleWeekday(key)}
-								/>
-								<div
-									class="btn btn-sm {days.includes(key) && !isEveryday ? 'btn-primary' : 'btn-outline'} {isEveryday
-										? 'opacity-30'
-										: ''}"
-								>
-									{label}
-								</div>
-							</label>
-						{/each}
-					</div>
-				</fieldset>
+					{/each}
+				</div>
+
+				<div class="divider m-2 text-xs text-gray-500">or choose days</div>
+
+				<div class="flex flex-wrap items-center gap-2">
+					{#each weekdays as { key, label }}
+						<label class="cursor-pointer">
+							<input type="checkbox" class="sr-only" checked={days.includes(key)} onchange={() => toggleWeekday(key)} />
+							<div
+								class="btn btn-sm {days.includes(key) ? 'btn-primary' : 'btn-outline'} {frequency !== 'custom'
+									? 'opacity-30'
+									: ''}"
+							>
+								{label}
+							</div>
+						</label>
+					{/each}
+				</div>
 			</div>
 
 			<!-- Hidden inputs for complex data -->
 			<input type="hidden" name="icon" value={icon} />
+			<input type="hidden" name="frequency" value={frequency} />
 			<input type="hidden" name="days" value={JSON.stringify(days)} />
 			{#if editHabit}
 				<input type="hidden" name="habitId" value={editHabit.id} />
