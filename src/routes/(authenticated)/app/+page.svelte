@@ -9,20 +9,22 @@
 </script>
 
 <div class="flex flex-col items-center justify-center">
-	<div class="absolute -z-1 mt-120 h-150 max-h-full w-150 max-w-full bg-[url('morning-background.png')] bg-cover"></div>
+	<div
+		class="absolute -z-1 mt-120 h-150 max-h-full w-140 max-w-full bg-[url('/morning-background.png')] bg-cover bg-center bg-no-repeat"
+	></div>
 </div>
 
-<div class="mx-8 flex flex-col items-center justify-center">
-	<div class="prose prose-sm mt-30">
+<div class="mx-8 mt-22 mb-30 flex flex-col items-center justify-center">
+	<div class="prose prose-sm">
 		<h1 class="text-primary">Good morning, {firstName}!</h1>
 	</div>
 
-	<div class=" mt-10"></div>
+	<div class=" mt-6"></div>
 
 	{#each habitsGroupedByList as list}
 		{#if list.habits.length > 0}
 			<div class="bg-base-100 collapse-arrow collapse mt-3 max-w-140 rounded-xl border-[1.5px] border-(--border-color)">
-				<input type="checkbox" />
+				<input type="checkbox" checked={list.name === 'Morning'} />
 				<div class="collapse-title font-semibold opacity-50">
 					<h2 class="flex h-6 items-center gap-1.5 text-sm">
 						<FluentWeatherSunnyLow20Regular class="h-5 w-5" />

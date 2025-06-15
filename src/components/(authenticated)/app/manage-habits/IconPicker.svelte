@@ -26,7 +26,18 @@
 				{#each Object.entries(iconRegistry) as [iconKey, iconConfig]}
 					<div class="form-control">
 						<label class="label cursor-pointer">
-							<input type="radio" name="icon" class="sr-only" value={iconKey} bind:group={icon} />
+							<input
+								type="radio"
+								name="icon"
+								class="sr-only"
+								value={iconKey}
+								bind:group={icon}
+								onchange={() => {
+									if (document.activeElement) {
+										(document.activeElement as HTMLElement).blur();
+									}
+								}}
+							/>
 							<div
 								class="m-1 rounded-lg border-2 p-2 text-center transition-all {icon === iconKey
 									? 'border-primary bg-primary/10'

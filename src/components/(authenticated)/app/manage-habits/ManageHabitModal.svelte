@@ -2,7 +2,7 @@
 	import IconPicker from './IconPicker.svelte';
 	import { enhance } from '$app/forms';
 
-	let { data, dialog = $bindable() } = $props();
+	let { data, dialog = $bindable(), editHabit } = $props();
 	let habitLists = data?.habitLists || [];
 
 	let icon = $state<string>('none');
@@ -13,6 +13,20 @@
 	let unit = $state<string>('times');
 	let isEveryday = $state(true);
 	let days = $state(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+
+	$effect(() => {
+		if (editHabit || editHabit === null) {
+			icon = editHabit?.icon || 'none';
+			name = editHabit?.name || '';
+			description = editHabit?.description || '';
+			listId = editHabit?.listId || habitLists[0]?.id || 0;
+			targetValue = editHabit?.targetValue || 1;
+			unit = editHabit?.unit || 'times';
+			days = editHabit?.days || ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+			isEveryday =
+				JSON.stringify(editHabit?.days) === JSON.stringify(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+		}
+	});
 
 	const weekdays = [
 		{ key: 'mon', label: 'Mon' },
@@ -35,21 +49,10 @@
 			days = [];
 		}
 		if (days.includes(day)) {
-			days = days.filter((d) => d !== day);
+			days = days.filter((d: string) => d !== day);
 		} else {
 			days = [...days, day];
 		}
-	}
-
-	function handleSubmit() {
-		console.log('Habit Name:', name);
-		console.log('Description:', description);
-		console.log('listId:', listId);
-		console.log('Target Value:', targetValue);
-		console.log('Unit:', unit);
-		console.log('Selected Icon:', icon);
-		console.log('Selected Weekdays:', days);
-		dialog?.close();
 	}
 </script>
 
@@ -60,23 +63,18 @@
 			<button class="btn btn-md btn-circle btn-ghost absolute top-2 right-2 mt-5 mr-2 text-xl">✕</button>
 		</form>
 
-		<h3 class="prose text-primary pt-2 text-center text-2xl">New habit</h3>
+		<h3 class="prose text-primary pt-2 text-center text-2xl">{editHabit ? 'Edit habit' : 'New habit'}</h3>
 
 		<form
 			method="POST"
-			action="?/createHabit"
+			action={editHabit ? '?/updateHabit' : '?/createHabit'}
 			use:enhance={() => {
 				return async ({ result }) => {
 					if (result.type === 'success') {
 						dialog?.close();
-						icon = 'none';
-						name = '';
-						description = '';
-						listId = habitLists[0]?.id || 0;
-						targetValue = 1;
-						unit = 'times';
-						isEveryday = true;
-						days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+						setTimeout(() => {
+							window.location.reload();
+						}, 100);
 					}
 				};
 			}}
@@ -158,9 +156,12 @@
 			<!-- Hidden inputs for complex data -->
 			<input type="hidden" name="icon" value={icon} />
 			<input type="hidden" name="days" value={JSON.stringify(days)} />
+			{#if editHabit}
+				<input type="hidden" name="habitId" value={editHabit.id} />
+			{/if}
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-primary mt-10">Create habit</button>
+				<button type="submit" class="btn btn-primary mt-10"> {editHabit ? 'Save changes' : 'Create habit'} </button>
 			</div>
 		</form>
 	</div>
