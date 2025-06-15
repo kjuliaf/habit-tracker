@@ -1,4 +1,4 @@
-import { pgTable, serial, uuid, text, integer, date, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, serial, uuid, text, integer, date, unique } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const habitLists = pgTable('habit_lists', {
@@ -38,12 +38,13 @@ export const habitCompletions = pgTable(
 	'habit_completions',
 	{
 		id: serial('id').primaryKey(),
+		userId: uuid('user_id').notNull(),
 		habitId: integer('habit_id').notNull(),
 		completedDate: date('completed_date').notNull(),
 		value: integer('value')
 	},
 	(table) => ({
-		habitDateUnique: uniqueIndex('habit_id_completed_date_unique').on(table.habitId, table.completedDate)
+		habitDateUnique: unique('habit_id_completed_date_unique').on(table.habitId, table.completedDate)
 	})
 );
 

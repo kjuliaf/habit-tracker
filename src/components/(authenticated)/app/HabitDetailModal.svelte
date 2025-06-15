@@ -26,5 +26,8 @@
 		<p class="text-center">Created at: {habit?.createdAt}</p>
 		<p class="text-center">{habit?.targetValue} {habit?.unit} {habit?.frequency}</p>
 		<p class="text-center">{habit?.frequency === 'custom' ? 'on' : ''} {habit?.days}</p>
+		{#if habit?.completions}
+			<p class="text-center">Completions count: {Object.keys(habit.completions).length}</p>
+		{/if}
 	</div>
 </dialog>

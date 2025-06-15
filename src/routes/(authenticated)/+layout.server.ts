@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/db';
-import { habitLists, habits } from '$lib/db/schema';
+import { habitLists, habits, habitCompletions } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 const defaultHabitLists = [
@@ -46,16 +46,40 @@ export async function load({ locals }) {
 
 		const userHabits = await db.select().from(habits).where(eq(habits.userId, user.id)).orderBy(habits.displayOrder);
 
+		const userHabitCompletions = await db.select().from(habitCompletions).where(eq(habitCompletions.userId, user.id));
+
 		// Group habits by list ID for easier frontend consumption
-		const habitsGroupedByList = existingLists.map((list) => ({
+		/* const habitsGroupedByList = existingLists.map((list) => ({
 			...list,
 			habits: userHabits.filter((habit) => habit.listId === list.id)
+		})); */
+
+		const habitsGroupedByList = existingLists.map((list) => ({
+			...list,
+			habits: userHabits
+				.filter((habit) => habit.listId === list.id)
+				.map((habit) => {
+					// Create completions map for this habit
+					const completions: Record<string, number> = {};
+
+					userHabitCompletions
+						.filter((completion) => completion.habitId === habit.id)
+						.forEach((completion) => {
+							completions[completion.completedDate] = completion.value ?? 0;
+						});
+
+					return {
+						...habit,
+						completions
+					};
+				})
 		}));
 
 		return {
 			user,
 			habitLists: existingLists,
 			habits: userHabits,
+			habitCompletions: userHabitCompletions,
 			habitsGroupedByList
 		};
 	} catch (error) {
