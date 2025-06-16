@@ -1,4 +1,4 @@
-import { pgTable, serial, uuid, text, integer, date, unique } from 'drizzle-orm/pg-core';
+import { pgTable, serial, uuid, text, integer, date, unique, real } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const habitLists = pgTable('habit_lists', {
@@ -15,7 +15,7 @@ export const habits = pgTable('habits', {
 	icon: text('icon').notNull(),
 	name: text('name').notNull(),
 	description: text('description'),
-	targetValue: integer('target_value'),
+	targetValue: real('target_value'),
 	unit: text('unit'),
 	frequency: text('frequency').notNull(),
 	days: text('days').array(),
@@ -41,7 +41,8 @@ export const habitCompletions = pgTable(
 		userId: uuid('user_id').notNull(),
 		habitId: integer('habit_id').notNull(),
 		completedDate: date('completed_date').notNull(),
-		value: integer('value')
+		value: real('value'),
+		entryMethod: text('entry_method')
 	},
 	(table) => ({
 		habitDateUnique: unique('habit_id_completed_date_unique').on(table.habitId, table.completedDate)

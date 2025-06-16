@@ -117,6 +117,7 @@
 						class="input join-item w-full"
 						bind:value={targetValue}
 						min="1"
+						step={unit === 'km' ? '0.1' : '1'}
 						required
 					/>
 					<select name="unit" class="select join-item w-40" bind:value={unit}>

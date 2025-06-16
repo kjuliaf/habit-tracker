@@ -35,14 +35,18 @@ export const actions = {
 
 			const nextDisplayOrder = (lastHabit[0]?.maxOrder || 0) + 1;
 
+			const unit = formData.get('unit') as string;
+			const target = formData.get('targetValue') as string;
+			const targetValue = unit === 'km' ? parseFloat(target) : parseInt(target, 10);
+
 			const habitData = {
 				userId: user.id,
 				listId: parseInt(formData.get('listId') as string),
 				icon: formData.get('icon') as string,
 				name: formData.get('name') as string,
 				description: formData.get('description') as string,
-				targetValue: parseInt(formData.get('targetValue') as string),
-				unit: formData.get('unit') as string,
+				targetValue,
+				unit,
 				frequency: formData.get('frequency') as string,
 				days: JSON.parse(formData.get('days') as string),
 				displayOrder: nextDisplayOrder
@@ -87,14 +91,18 @@ export const actions = {
 			const newListId = parseInt(formData.get('listId') as string);
 			const oldListId = existingHabit[0].listId;
 
+			const unit = formData.get('unit') as string;
+			const target = formData.get('targetValue') as string;
+			const targetValue = unit === 'km' ? parseFloat(target) : parseInt(target, 10);
+
 			// Always update basic fields
 			const basicHabitData = {
 				listId: newListId,
 				icon: formData.get('icon') as string,
 				name: formData.get('name') as string,
 				description: formData.get('description') as string,
-				targetValue: parseInt(formData.get('targetValue') as string),
-				unit: formData.get('unit') as string,
+				targetValue,
+				unit,
 				frequency: formData.get('frequency') as string,
 				days: JSON.parse(formData.get('days') as string)
 			};

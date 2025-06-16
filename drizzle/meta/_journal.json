@@ -29,6 +29,20 @@
       "when": 1750013057728,
       "tag": "0003_whole_blazing_skull",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1750033956578,
+      "tag": "0004_magenta_moonstone",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1750036490397,
+      "tag": "0005_dashing_dragon_man",
+      "breakpoints": true
     }
   ]
 }

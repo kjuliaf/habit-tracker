@@ -48,24 +48,18 @@ export async function load({ locals }) {
 
 		const userHabitCompletions = await db.select().from(habitCompletions).where(eq(habitCompletions.userId, user.id));
 
-		// Group habits by list ID for easier frontend consumption
-		/* const habitsGroupedByList = existingLists.map((list) => ({
-			...list,
-			habits: userHabits.filter((habit) => habit.listId === list.id)
-		})); */
-
 		const habitsGroupedByList = existingLists.map((list) => ({
 			...list,
 			habits: userHabits
 				.filter((habit) => habit.listId === list.id)
 				.map((habit) => {
 					// Create completions map for this habit
-					const completions: Record<string, number> = {};
+					const completions: Record<string, typeof userHabitCompletions[number]> = {};
 
 					userHabitCompletions
 						.filter((completion) => completion.habitId === habit.id)
 						.forEach((completion) => {
-							completions[completion.completedDate] = completion.value ?? 0;
+							completions[completion.completedDate] = completion;
 						});
 
 					return {

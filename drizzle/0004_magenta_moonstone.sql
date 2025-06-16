@@ -1,0 +1,1 @@
+ALTER TABLE "habits" ALTER COLUMN "target_value" SET DATA TYPE real;
