@@ -43,7 +43,7 @@
 		habit?.unit === 'times' ? 'x' : habit?.unit === 'minutes' ? 'min' : habit?.unit === 'pages' ? 'pp.' : habit?.unit
 	);
 
-	function getWeekDays(date: Date) {
+	function getPrevWeekDays(date: Date) {
 		const days = [];
 		const startOfWeek = new Date(date);
 		const dayOfWeek = date.getDay();
@@ -53,26 +53,27 @@
 		for (let i = 0; i < 7; i++) {
 			const day = new Date(startOfWeek);
 			day.setDate(startOfWeek.getDate() + i);
-			days.push(day.toISOString().split('T')[0]);
+			if (day <= date) {
+				days.push(day.toISOString().split('T')[0]);
+			}
 		}
 		return days;
 	}
 
-	function getMonthDays(date: Date) {
+	function getPrevMonthDays(date: Date) {
 		const days = [];
 		const year = date.getFullYear();
 		const month = date.getMonth();
-		const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-		for (let day = 1; day <= daysInMonth; day++) {
-			const currentDay = new Date(year, month, day);
+		for (let day = 1; day <= date.getDate(); day++) {
+			const currentDay = new Date(year, month, day, 12, 0, 0);
 			days.push(currentDay.toISOString().split('T')[0]);
 		}
 		return days;
 	}
 
-	let weekDays = $derived(getWeekDays(date));
-	let monthDays = $derived(getMonthDays(date));
+	let weekDays = $derived(getPrevWeekDays(date));
+	let monthDays = $derived(getPrevMonthDays(date));
 
 	let weeklyTotal = $derived(weekDays.reduce((total, day) => total + (habit?.completions?.[day]?.value || 0), 0));
 
@@ -147,7 +148,7 @@
 						<div class="min-w-15">
 							<p class=" text-center text-lg">
 								{total > 1000 ? (total / 1000).toFixed(0) + 'K' : (total ?? 0)}<span
-									class="ml-0.75 text-[0.5625em] text-gray-400"
+									class="ml-0.5 text-[0.625em] text-gray-400"
 								>
 									{habitUnitShort}
 								</span>
@@ -164,7 +165,7 @@
 			<div class="rounded-sm border-1 border-(--border-color) pb-2">
 				<p class="my-b -mt-2 ml-2 w-max bg-white text-xs font-semibold text-gray-400">Track progress</p>
 
-				<div class="m-6 flex flex-col items-center justify-center gap-4">
+				<div class="m-4 flex flex-col items-center justify-center gap-4">
 					<form
 						method="POST"
 						action="?/updateCompletion"
@@ -182,12 +183,17 @@
 							};
 						}}
 					>
+						<h4 class="text-primary mb-6 text-center text-sm {manualInputValue !== null ? 'text-gray-400' : 'black'}">
+							Track progress for {date.toLocaleDateString('en', { month: 'long' })}
+							{date.getDate()}
+						</h4>
+
 						<div class="w-full max-w-xs">
 							<div class="mb-2 flex justify-between text-sm">
 								<p class={manualInputValue !== null ? 'text-gray-400' : 'black'}>Select value:</p>
 								<p class="badge {manualInputValue !== null ? 'badge-ghost text-gray-400' : 'badge-soft badge-primary'}">
 									{rangeInputValue}
-									{habitUnitShort}
+									{habit?.unit}
 								</p>
 							</div>
 

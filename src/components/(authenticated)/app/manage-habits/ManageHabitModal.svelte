@@ -135,12 +135,12 @@
 			<div>
 				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Frequency</legend>
 
-				<div class="items-cente flex flex-wrap gap-2">
+				<div class="flex w-full items-center gap-2">
 					{#each frequencyOptions as { key, label }}
-						<label class="cursor-pointer">
+						<label class="w-full cursor-pointer">
 							<input type="radio" class="sr-only" checked={frequency === key} onchange={() => setFrequency(key)} />
 							<div
-								class="btn btn-sm {frequency === key ? 'btn-primary' : 'btn-outline'} {frequency === 'custom'
+								class="btn btn-sm btn-block {frequency === key ? 'btn-primary' : 'btn-outline'} {frequency === 'custom'
 									? 'opacity-30'
 									: ''}"
 							>
@@ -152,14 +152,14 @@
 
 				<div class="divider m-2 text-xs text-gray-500">or choose days</div>
 
-				<div class="flex flex-wrap items-center gap-2">
+				<div class="flex flex-wrap items-center gap-2 min-[460px]:w-full min-[460px]:flex-nowrap">
 					{#each weekdays as { key, label }}
-						<label class="cursor-pointer">
+						<label class="cursor-pointer min-[460px]:w-full">
 							<input type="checkbox" class="sr-only" checked={days.includes(key)} onchange={() => toggleWeekday(key)} />
 							<div
-								class="btn btn-sm {days.includes(key) ? 'btn-primary' : 'btn-outline'} {frequency !== 'custom'
-									? 'opacity-30'
-									: ''}"
+								class="btn btn-sm min-[460px]:btn-block {days.includes(key)
+									? 'btn-primary'
+									: 'btn-outline'} {frequency !== 'custom' ? 'opacity-30' : ''}"
 							>
 								{label}
 							</div>

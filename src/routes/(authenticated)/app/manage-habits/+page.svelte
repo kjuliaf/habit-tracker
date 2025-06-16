@@ -55,11 +55,12 @@
 
 <div class="mx-8 flex flex-col items-center justify-center">
 	<div class="prose prose-sm my-22 w-full max-w-140">
-		<h1 class="text-primary text-center">My habits</h1>
+		<h1 class="text-primary mb-10 text-center">My habits</h1>
 
 		{#each habitsGroupedByList as list}
 			<div class="mb-6">
-				<h2 class="mb-3 text-sm font-semibold">{list.name}</h2>
+				<h2 class="!mb-0 text-sm font-semibold">{list.name}</h2>
+				<div class="divider !mb-0"></div>
 
 				{#if list.habits.length > 0}
 					<div data-sortable data-list-id={list.id}>
@@ -92,7 +93,7 @@
 						{/each}
 					</div>
 				{:else}
-					<p class="text-gray-500 italic">No habits in this list yet</p>
+					<p class="!mt-0 text-sm text-gray-500 italic">No habits in this list yet</p>
 				{/if}
 			</div>
 		{/each}

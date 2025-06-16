@@ -198,7 +198,16 @@
 									<div class="text-xs opacity-60">
 										{getResult(habit)}/{habit.targetValue}
 										{habit.unit}
-										{habit.frequency === 'weekly' ? 'this week' : habit.frequency === 'monthly' ? 'this month' : ''}
+										{habit.frequency === 'weekly'
+											? 'this week'
+											: habit.frequency === 'monthly'
+												? 'this month'
+												: 'this day'}
+										{#if habit.completions[selectedDate.toISOString().split('T')[0]]}
+											{habit.frequency === 'weekly' || habit.frequency === 'monthly'
+												? `(${habit.completions[selectedDate.toISOString().split('T')[0]].value} ${habit.unit} this day)`
+												: ''}
+										{/if}
 									</div>
 								</div>
 								<div>
