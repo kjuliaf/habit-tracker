@@ -92,17 +92,17 @@
 		<button onclick={goPrevDate}>
 			<MaterialSymbolsArrowBackIosNew class="text-primary cursor-pointer" />
 		</button>
-		<button class="btn btn-primary btn-outline relative h-14 w-36">
+		<button class="btn btn-primary btn-outline relative h-12 w-36">
 			<SolarCalendarLinear class="absolute left-2.5 h-7.5 w-7.5" />
 			<input
 				type="text"
 				readonly
-				class="input pika-single absolute h-14 w-36 cursor-pointer opacity-0"
+				class="input pika-single absolute h-12 w-36 cursor-pointer opacity-0"
 				bind:this={myDatepicker}
 			/>
 
 			<div
-				class="input pointer-events-none absolute flex h-14 w-36 flex-col items-start justify-center gap-0 bg-transparent pl-12 text-left"
+				class="input pointer-events-none absolute flex h-12 w-36 flex-col items-start justify-center gap-0 border-none bg-transparent pl-12"
 			>
 				<p class="font-bold">{dateSplit(dateToString(selectedDate))[0]}</p>
 				<p class="-mt-0.5 text-xs">{dateSplit(dateToString(selectedDate))[1]}</p>

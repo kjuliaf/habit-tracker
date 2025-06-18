@@ -9,6 +9,8 @@
 	let rangeInputValue = $derived(initialRangeValue);
 	let initialManualValue = $state<number | null>(null);
 	let manualInputValue = $derived(initialManualValue);
+	let initialUncompleted = $state(false);
+	let markedUncompleted = $derived(initialUncompleted);
 
 	$effect(() => {
 		if (habit) {
@@ -16,6 +18,8 @@
 			rangeInputValue = 0;
 			initialManualValue = null;
 			manualInputValue = null;
+			initialUncompleted = false;
+			markedUncompleted = false;
 		}
 	});
 
@@ -36,6 +40,16 @@
 			initialManualValue = habit.completions[dateStr].value;
 		} else {
 			initialManualValue = null;
+		}
+	});
+
+	$effect(() => {
+		const dateStr = date.toISOString().split('T')[0];
+
+		if (habit?.completions?.[dateStr]?.entryMethod === 'uncompleted') {
+			initialUncompleted = true
+		} else {
+			initialUncompleted = false;
 		}
 	});
 
@@ -102,7 +116,7 @@
 </script>
 
 <dialog bind:this={dialog} class="modal">
-	<div class="modal-box">
+	<div class="modal-box max-w-xl">
 		<form method="dialog">
 			<button class="btn btn-md btn-circle btn-ghost absolute top-2 right-2 mt-5 mr-2 text-xl">✕</button>
 		</form>
@@ -190,8 +204,12 @@
 
 						<div class="w-full max-w-xs">
 							<div class="mb-2 flex justify-between text-sm">
-								<p class={manualInputValue !== null ? 'text-gray-400' : 'black'}>Select value:</p>
-								<p class="badge {manualInputValue !== null ? 'badge-ghost text-gray-400' : 'badge-soft badge-primary'}">
+								<p class={manualInputValue !== null || markedUncompleted ? 'text-gray-400' : 'black'}>Select value:</p>
+								<p
+									class="badge {manualInputValue !== null || markedUncompleted
+										? 'badge-ghost text-gray-400'
+										: 'badge-soft badge-primary'}"
+								>
 									{rangeInputValue}
 									{habit?.unit}
 								</p>
@@ -204,7 +222,7 @@
 								class="range range-primary range-xs"
 								step={habit?.unit === 'km' ? '0.1' : '1'}
 								bind:value={rangeInputValue}
-								disabled={manualInputValue !== null}
+								disabled={manualInputValue !== null || markedUncompleted}
 							/>
 
 							<div class="mt-2 flex justify-between px-2.5 text-xs">
@@ -216,27 +234,51 @@
 						<div class="divider my-6 text-sm text-gray-500">or</div>
 
 						<div class="mt-2 flex w-full max-w-xs items-center gap-2">
-							<p class="w-full text-sm {manualInputValue === null ? 'text-gray-400' : 'black'}">Enter manually:</p>
+							<p class="w-full text-sm {manualInputValue === null || markedUncompleted ? 'text-gray-400' : 'black'}">
+								Enter manually:
+							</p>
 							<label class="input input-sm">
-								<input type="number" min="0" bind:value={manualInputValue} step={habit?.unit === 'km' ? '0.1' : '1'} />
+								<input
+									type="number"
+									min="0"
+									bind:value={manualInputValue}
+									step={habit?.unit === 'km' ? '0.1' : '1'}
+									disabled={markedUncompleted}
+								/>
 								<span class="label">{habit?.unit}</span>
 							</label>
 						</div>
 
+						<div class="divider my-6 text-sm text-gray-500">or</div>
+
+						<div class="flex justify-between">
+							<p class="text-sm {markedUncompleted ? 'black' : 'text-gray-400'}">Mark uncompleted:</p>
+							<input type="checkbox" bind:checked={markedUncompleted} class="toggle toggle-primary" />
+						</div>
+
 						<input type="hidden" name="habitId" value={habit?.id} />
 						<input type="hidden" name="habitUnit" value={habit?.unit} />
-						<input type="hidden" name="value" value={manualInputValue !== null ? manualInputValue : rangeInputValue} />
+						<input
+							type="hidden"
+							name="value"
+							value={markedUncompleted ? 0 : manualInputValue !== null ? manualInputValue : rangeInputValue}
+						/>
 						<input type="hidden" name="completedDate" value={date.toISOString().split('T')[0]} />
-						<input type="hidden" name="entryMethod" value={manualInputValue !== null ? 'manual' : 'range'} />
+						<input
+							type="hidden"
+							name="entryMethod"
+							value={markedUncompleted ? 'uncompleted' : manualInputValue !== null ? 'manual' : 'range'}
+						/>
 
 						<div class="mt-8 flex items-center justify-center gap-2">
 							<button
 								type="submit"
 								class="btn btn-sm btn-outline btn-error"
-								disabled={rangeInputValue === 0 && manualInputValue === null}
+								disabled={rangeInputValue === 0 && manualInputValue === null && !markedUncompleted}
 								onclick={() => {
 									if (rangeInputValue) rangeInputValue = 0;
 									if (manualInputValue) manualInputValue = null;
+									if (markedUncompleted) markedUncompleted = false;
 								}}
 							>
 								Clear

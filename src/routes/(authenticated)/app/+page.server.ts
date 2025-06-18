@@ -28,7 +28,7 @@ export const actions = {
 				return fail(400, { error: 'Invalid date format' });
 			}
 
-			if (value === 'null' || value === null || value === '' || value === '0') {
+			if (value === 'null' || value === null || value === '' || (value === '0' && entryMethod !== 'uncompleted')) {
 				// User unchecked - delete completion
 				await db
 					.delete(habitCompletions)

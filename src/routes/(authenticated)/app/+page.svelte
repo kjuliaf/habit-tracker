@@ -9,6 +9,7 @@
 	let habitsGroupedByList = data?.habitsGroupedByList || [];
 	import StreamlineCheckSolid from '~icons/streamline/check-solid';
 	import { browser } from '$app/environment';
+	import StreamlineDelete1Solid from '~icons/streamline/delete-1-solid';
 
 	let currentHabit: any = $state(null);
 	let isLoaded = $state(false);
@@ -132,9 +133,9 @@
 
 	function getResult(habit: any) {
 		if (habit.frequency === 'weekly') {
-			return getWeeklyAccumulated(habit);
+			return getWeeklyAccumulated(habit).toFixed(1);
 		} else if (habit.frequency === 'monthly') {
-			return getMonthlyAccumulated(habit);
+			return getMonthlyAccumulated(habit).toFixed(1);
 		} else {
 			return habit.completions[selectedDate.toISOString().split('T')[0]]?.value || 0;
 		}
@@ -150,7 +151,7 @@
 		></div>
 	</div>
 
-	<div class="mx-8 mt-22 mb-30 flex flex-col items-center justify-center">
+	<div class="mx-5 mt-22 mb-30 flex flex-col items-center justify-center">
 		<div class="prose prose-sm">
 			<h1 class="text-primary">Good morning, {firstName}!</h1>
 		</div>
@@ -194,19 +195,43 @@
 									</div>
 								</div>
 								<div>
-									<div>{habit.name}</div>
-									<div class="text-xs opacity-60">
-										{getResult(habit)}/{habit.targetValue}
-										{habit.unit}
-										{habit.frequency === 'weekly'
-											? 'this week'
-											: habit.frequency === 'monthly'
-												? 'this month'
-												: 'this day'}
-										{#if habit.completions[selectedDate.toISOString().split('T')[0]]}
-											{habit.frequency === 'weekly' || habit.frequency === 'monthly'
-												? `(${habit.completions[selectedDate.toISOString().split('T')[0]].value} ${habit.unit} this day)`
-												: ''}
+									<div class="flex flex-col items-baseline justify-between gap-1 sm:flex-row sm:items-center">
+										<div>
+											{habit.name}
+											<div class="text-xs opacity-60">
+												{getResult(habit)}/{habit.targetValue}
+												{habit.unit}
+												{habit.frequency === 'weekly'
+													? 'this week'
+													: habit.frequency === 'monthly'
+														? 'this month'
+														: 'today'}
+											</div>
+										</div>
+										{#if habit.completions[selectedDate.toISOString().split('T')[0]] || calcProgress(habit) >= 100}
+											<div class="flex flex-row-reverse gap-3 sm:flex-row">
+												{#if habit.completions[selectedDate
+														.toISOString()
+														.split('T')[0]] && calcProgress(habit) > 0 && (habit.frequency === 'weekly' || habit.frequency === 'monthly')}
+													<div class="badge badge-xs badge-neutral badge-outline -mr-2 min-w-max opacity-60">
+														<StreamlineCheckSolid class="-mr-1 h-2 w-2" />
+														{habit.completions[selectedDate.toISOString().split('T')[0]].value}
+														{habit.unit} today
+													</div>
+												{/if}
+												{#if calcProgress(habit) >= 100}
+													<div class="badge badge-xs badge-success badge-outline -mr-2">
+														<StreamlineCheckSolid class="-mr-1 h-2 w-2" />
+														Completed
+													</div>
+												{/if}
+												{#if habit.completions[selectedDate.toISOString().split('T')[0]].entryMethod === 'uncompleted'}
+													<div class="badge badge-xs badge-error badge-outline -mr-2">
+														<StreamlineDelete1Solid class="-mr-1 h-1.5 w-1.5" />
+														Not completed
+													</div>
+												{/if}
+											</div>
 										{/if}
 									</div>
 								</div>

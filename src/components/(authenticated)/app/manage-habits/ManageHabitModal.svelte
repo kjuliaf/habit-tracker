@@ -150,7 +150,7 @@
 					{/each}
 				</div>
 
-				<div class="divider m-2 text-xs text-gray-500">or choose days</div>
+				<div class="divider m-4 text-xs text-gray-500">or choose days</div>
 
 				<div class="flex flex-wrap items-center gap-2 min-[460px]:w-full min-[460px]:flex-nowrap">
 					{#each weekdays as { key, label }}
