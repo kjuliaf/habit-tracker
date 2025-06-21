@@ -10,11 +10,14 @@
 	import StreamlineCheckSolid from '~icons/streamline/check-solid';
 	import { browser } from '$app/environment';
 	import StreamlineDelete1Solid from '~icons/streamline/delete-1-solid';
+	import MdiClockOutline from '~icons/mdi/clock-outline';
 
 	let currentHabit: any = $state(null);
 	let isLoaded = $state(false);
 	let dialog: HTMLDialogElement | null = $state(null);
 	let selectedDate = $state(new Date());
+
+	let categoriesOpen = $state<number[]>([]);
 
 	$effect(() => {
 		if (browser) {
@@ -23,6 +26,31 @@
 				selectedDate = new Date(saved);
 			}
 			isLoaded = true;
+		}
+	});
+
+	$effect(() => {
+		if (browser) {
+			const saved = sessionStorage.getItem('categoriesOpen');
+			if (saved) {
+				categoriesOpen = JSON.parse(saved);
+			} else {
+				const hasMorning = visibleHabitsGroupedByList.some((list) => list.name === 'Morning');
+				const hasDay = visibleHabitsGroupedByList.some((list) => list.name === 'Day');
+				const hasNight = visibleHabitsGroupedByList.some((list) => list.name === 'Night');
+
+				if (hasMorning && hasDay && hasNight) {
+					if (isMorning()) {
+						categoriesOpen = [1];
+					} else if (isAfternoon()) {
+						categoriesOpen = [2];
+					} else if (isEvening()) {
+						categoriesOpen = [3];
+					}
+				} else {
+					categoriesOpen = visibleHabitsGroupedByList.map((list) => list.displayOrder);
+				}
+			}
 		}
 	});
 
@@ -47,7 +75,7 @@
 			.map((list) => ({
 				...list,
 				habits: list.habits.filter((habit) => {
-					let habitDate = new Date(habit.createdAt);
+					let habitDate = new Date(habit.startDate);
 					return selectedDate >= habitDate;
 				})
 			}))
@@ -140,6 +168,35 @@
 			return habit.completions[selectedDate.toISOString().split('T')[0]]?.value || 0;
 		}
 	}
+
+	function isMorning() {
+		const now = new Date();
+		return now.getHours() >= 4 && now.getHours() < 12;
+	}
+
+	function isAfternoon() {
+		const now = new Date();
+		return now.getHours() >= 12 && now.getHours() < 18;
+	}
+
+	function isEvening() {
+		const now = new Date();
+		return now.getHours() >= 18 || now.getHours() < 4;
+	}
+
+	function getGreeting() {
+		if (isMorning()) {
+			return 'Good morning,';
+		} else if (isAfternoon()) {
+			return 'Good afternoon,';
+		} else {
+			return 'Good evening,';
+		}
+	}
+
+	function getBackgroundImage() {
+		return "bg-[url('/app-background.png')]";
+	}
 </script>
 
 {#if isLoaded}
@@ -147,19 +204,35 @@
 
 	<div class="flex flex-col items-center justify-center">
 		<div
-			class="absolute -z-1 mt-120 h-150 max-h-full w-140 max-w-full bg-[url('/morning-background.png')] bg-cover bg-center bg-no-repeat"
+			class="absolute -z-1 mt-100 h-140 max-h-full w-140 max-w-full {getBackgroundImage()} bg-cover bg-center bg-no-repeat"
 		></div>
 	</div>
 
 	<div class="mx-5 mt-22 mb-30 flex flex-col items-center justify-center">
 		<div class="prose prose-sm">
-			<h1 class="text-primary">Good morning, {firstName}!</h1>
+			<h1 class="text-primary">{getGreeting()} {firstName}!</h1>
 		</div>
 
 		<div class="mt-6"></div>
 		{#each visibleHabitsGroupedByList as list}
 			<div class="bg-base-100 collapse-arrow collapse mt-3 max-w-140 rounded-xl border-[1.5px] border-(--border-color)">
-				<input type="checkbox" checked />
+				<input
+					type="checkbox"
+					checked={categoriesOpen.includes(list.displayOrder)}
+					onchange={(e) => {
+						const target = e.target as HTMLInputElement;
+						if (target?.checked) {
+							if (!categoriesOpen.includes(list.displayOrder)) {
+								categoriesOpen = [...categoriesOpen, list.displayOrder];
+							}
+						} else {
+							categoriesOpen = categoriesOpen.filter((order) => order !== list.displayOrder);
+						}
+						if (browser) {
+							sessionStorage.setItem('categoriesOpen', JSON.stringify(categoriesOpen));
+						}
+					}}
+				/>
 				<div class="collapse-title font-semibold opacity-50">
 					<h2 class="flex h-6 items-center gap-1.5 text-sm">
 						<FluentWeatherSunnyLow20Regular class="h-5 w-5" />
@@ -197,7 +270,16 @@
 								<div>
 									<div class="flex flex-col items-baseline justify-between gap-1 sm:flex-row sm:items-center">
 										<div>
-											{habit.name}
+											<div class="flex gap-2">
+												<p>{habit.name}</p>
+												{#if habit.startTime}
+													<div class="flex items-center gap-0.5 text-[0.6875rem] opacity-60">
+														<MdiClockOutline class="h-3 w-3" />
+														<span class="-mb-0.25">{habit.startTime}{habit.endTime ? '–' + habit.endTime : ''} </span>
+													</div>
+												{/if}
+											</div>
+
 											<div class="text-xs opacity-60">
 												{getResult(habit)}/{habit.targetValue}
 												{habit.unit}
@@ -225,7 +307,11 @@
 														Completed
 													</div>
 												{/if}
-												{#if habit.completions[selectedDate.toISOString().split('T')[0]].entryMethod === 'uncompleted'}
+												{#if habit.completions[selectedDate
+														.toISOString()
+														.split('T')[0]] && habit.completions[selectedDate
+															.toISOString()
+															.split('T')[0]].entryMethod === 'uncompleted'}
 													<div class="badge badge-xs badge-error badge-outline -mr-2">
 														<StreamlineDelete1Solid class="-mr-1 h-1.5 w-1.5" />
 														Not completed

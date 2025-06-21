@@ -8,7 +8,6 @@
 
 	let myDatepicker: HTMLInputElement | null = null;
 	let picker: any;
-	/* let selectedDate: Date = $state(new Date()); */
 
 	let weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	let months = [
@@ -69,6 +68,9 @@
 					setDefaultDate: true,
 					onSelect: function (date) {
 						selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+					},
+					onOpen() {
+						picker.el.classList.add('calendar-1');
 					}
 				});
 
@@ -115,8 +117,10 @@
 </div>
 
 <style>
-	:global(.pika-single:not(input)) {
+	:global(.calendar-1) {
 		margin-left: -5em !important;
+		top: 0;
+		position: fixed !important;
 	}
 
 	:global(.pika-single .is-today .pika-button) {

@@ -1,7 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { db } from '$lib/db';
-import { habits } from '$lib/db/schema';
-import { eq, max, sql, and, gt } from 'drizzle-orm';
+import { habits, habitCompletions } from '$lib/db/schema';
+import { eq, max, sql, and, gt, lt } from 'drizzle-orm';
 
 export async function load({ parent }) {
 	const parentData = await parent();
@@ -49,7 +49,10 @@ export const actions = {
 				unit,
 				frequency: formData.get('frequency') as string,
 				days: JSON.parse(formData.get('days') as string),
-				displayOrder: nextDisplayOrder
+				displayOrder: nextDisplayOrder,
+				startDate: formData.get('startDate') as string,
+				startTime: formData.get('startTime') as string,
+				endTime: formData.get('endTime') as string
 			};
 
 			const result = await db.insert(habits).values(habitData).returning();
@@ -93,7 +96,9 @@ export const actions = {
 
 			const unit = formData.get('unit') as string;
 			const target = formData.get('targetValue') as string;
-			const targetValue = unit === 'km' ? parseFloat(target) : parseInt(target, 10);
+			const targetValue = unit === 'done' ? 1 : unit === 'km' ? parseFloat(target) : parseInt(target, 10);
+			const startDate = formData.get('startDate') as string;
+			const [oldHabit] = await db.select().from(habits).where(eq(habits.id, habitId));
 
 			// Always update basic fields
 			const basicHabitData = {
@@ -104,7 +109,10 @@ export const actions = {
 				targetValue,
 				unit,
 				frequency: formData.get('frequency') as string,
-				days: JSON.parse(formData.get('days') as string)
+				days: JSON.parse(formData.get('days') as string),
+				startDate: startDate,
+				startTime: formData.get('startTime') as string,
+				endTime: formData.get('endTime') as string
 			};
 
 			await db.update(habits).set(basicHabitData).where(eq(habits.id, habitId));
@@ -133,6 +141,13 @@ export const actions = {
 							eq(habits.userId, user.id)
 						)
 					);
+			}
+
+			// If startDate changed, delete old completions before the new startDate
+			if (oldHabit && startDate > oldHabit.startDate) {
+				await db
+					.delete(habitCompletions)
+					.where(and(eq(habitCompletions.habitId, habitId), lt(habitCompletions.completedDate, startDate)));
 			}
 
 			// Get the final updated habit

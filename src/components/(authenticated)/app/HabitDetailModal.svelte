@@ -47,14 +47,22 @@
 		const dateStr = date.toISOString().split('T')[0];
 
 		if (habit?.completions?.[dateStr]?.entryMethod === 'uncompleted') {
-			initialUncompleted = true
+			initialUncompleted = true;
 		} else {
 			initialUncompleted = false;
 		}
 	});
 
 	let habitUnitShort = $derived(
-		habit?.unit === 'times' ? 'x' : habit?.unit === 'minutes' ? 'min' : habit?.unit === 'pages' ? 'pp.' : habit?.unit
+		habit?.unit === 'done'
+			? '✓'
+			: habit?.unit === 'times'
+				? 'x'
+				: habit?.unit === 'minutes'
+					? 'min'
+					: habit?.unit === 'pages'
+						? 'pp.'
+						: habit?.unit
 	);
 
 	function getPrevWeekDays(date: Date) {
@@ -133,7 +141,11 @@
 		<p class="mt-2 text-center text-sm">
 			{habit?.targetValue}
 			{habit?.unit}
-			{habit?.frequency === 'custom' ? 'per day' : habit?.frequency} | Since {habit?.createdAt}
+			{habit?.frequency === 'custom' ? 'per day' : habit?.frequency} | {habit?.startTime && habit?.endTime
+				? habit?.startTime + '-' + habit?.endTime + ' | '
+				: habit?.startTime
+					? habit?.startTime + ' | '
+					: ''} Since <span class="whitespace-nowrap">{habit?.startDate}</span>
 		</p>
 
 		<div class="my-5 flex flex-col gap-4">
@@ -181,6 +193,7 @@
 
 				<div class="m-4 flex flex-col items-center justify-center gap-4">
 					<form
+						class="w-full max-w-xs"
 						method="POST"
 						action="?/updateCompletion"
 						use:enhance={() => {
@@ -226,28 +239,35 @@
 							/>
 
 							<div class="mt-2 flex justify-between px-2.5 text-xs">
-								<span class="-mt-1 text-gray-500">0</span>
-								<span class="-mt-1 text-gray-500">{habit?.targetValue}</span>
+								{#if habit?.unit === 'done'}
+									<span class="-mt-1 text-gray-500">⨉</span>
+									<span class="-mt-1 text-gray-500">✓</span>
+								{:else}
+									<span class="-mt-1 text-gray-500">0</span>
+									<span class="-mt-1 text-gray-500">{habit?.targetValue}</span>
+								{/if}
 							</div>
 						</div>
 
-						<div class="divider my-6 text-sm text-gray-500">or</div>
+						{#if habit?.unit !== 'done'}
+							<div class="divider my-6 text-sm text-gray-500">or</div>
 
-						<div class="mt-2 flex w-full max-w-xs items-center gap-2">
-							<p class="w-full text-sm {manualInputValue === null || markedUncompleted ? 'text-gray-400' : 'black'}">
-								Enter manually:
-							</p>
-							<label class="input input-sm">
-								<input
-									type="number"
-									min="0"
-									bind:value={manualInputValue}
-									step={habit?.unit === 'km' ? '0.1' : '1'}
-									disabled={markedUncompleted}
-								/>
-								<span class="label">{habit?.unit}</span>
-							</label>
-						</div>
+							<div class="mt-2 flex w-full max-w-xs items-center gap-2">
+								<p class="w-full text-sm {manualInputValue === null || markedUncompleted ? 'text-gray-400' : 'black'}">
+									Enter manually:
+								</p>
+								<label class="input input-sm">
+									<input
+										type="number"
+										min="0"
+										bind:value={manualInputValue}
+										step={habit?.unit === 'km' ? '0.1' : '1'}
+										disabled={markedUncompleted}
+									/>
+									<span class="label">{habit?.unit}</span>
+								</label>
+							</div>
+						{/if}
 
 						<div class="divider my-6 text-sm text-gray-500">or</div>
 

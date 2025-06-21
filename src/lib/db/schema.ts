@@ -20,7 +20,9 @@ export const habits = pgTable('habits', {
 	frequency: text('frequency').notNull(),
 	days: text('days').array(),
 	displayOrder: integer('display_order').notNull(),
-	createdAt: date('created_at').defaultNow().notNull()
+	startDate: date('start_date').notNull(),
+	startTime: text('start_time'),
+	endTime: text('end_time')
 });
 
 export const habitListRelations = relations(habitLists, ({ many }) => ({

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import IconPicker from './IconPicker.svelte';
 	import { enhance } from '$app/forms';
+	import { browser } from '$app/environment';
 
 	let { data, dialog = $bindable(), editHabit } = $props();
 	let habitLists = data?.habitLists || [];
@@ -10,7 +11,11 @@
 	let description = $state<string>('');
 	let listId = $state<number>(habitLists[0]?.id || 0);
 	let targetValue = $state<number>(1);
-	let unit = $state<string>('times');
+	let unit = $state<string>('done');
+	let startDate = $state<Date>(new Date());
+	let startTime = $state<string>();
+	let endTime = $state<string>('');
+	let picker: any;
 
 	let frequency: string = $state('daily');
 
@@ -23,7 +28,10 @@
 			description = editHabit?.description || '';
 			listId = editHabit?.listId || habitLists[0]?.id || 0;
 			targetValue = editHabit?.targetValue || 1;
-			unit = editHabit?.unit || 'times';
+			unit = editHabit?.unit || 'done';
+			startDate = editHabit?.startDate ? new Date(editHabit.startDate) : new Date();
+			startTime = editHabit?.startTime || '';
+			endTime = editHabit?.endTime || '';
 			frequency = editHabit?.frequency || 'daily';
 			days = editHabit?.days || [];
 		}
@@ -59,6 +67,47 @@
 			days = [...days, day];
 		}
 	}
+
+	function repositionPicker() {
+		if (picker && picker.isVisible()) {
+			picker.adjustPosition();
+		}
+	}
+
+	let myDatepicker: HTMLInputElement | null = null;
+	$effect(() => {
+		if (browser && myDatepicker) {
+			import('pikaday').then(({ default: Pikaday }) => {
+				picker = new Pikaday({
+					field: myDatepicker,
+					toString(date) {
+						const year = date.getFullYear();
+						const month = String(date.getMonth() + 1).padStart(2, '0');
+						const day = String(date.getDate()).padStart(2, '0');
+						return `${year}-${month}-${day}`;
+					},
+					firstDay: 1,
+					onSelect: function (date) {
+						startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+					},
+					container: myDatepicker ? myDatepicker.parentElement : undefined,
+					reposition: false,
+					onOpen() {
+						picker.el.classList.add('calendar-2');
+					}
+				});
+
+				window.addEventListener('resize', repositionPicker);
+			});
+
+			return () => {
+				if (picker) {
+					picker.destroy();
+				}
+				window.removeEventListener('resize', repositionPicker);
+			};
+		}
+	});
 </script>
 
 <!-- Open the modal using ID.showModal() method -->
@@ -99,28 +148,43 @@
 				<textarea name="description" class="textarea w-full" bind:value={description}></textarea>
 			</div>
 
-			<div>
-				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Category</legend>
-				<select name="listId" class="select w-full" bind:value={listId}>
-					{#each habitLists as list}
-						<option value={list.id}>{list.name}</option>
-					{/each}
-				</select>
+			<div class="flex gap-2">
+				<div class="w-full">
+					<legend class="fieldset-legend mt-2 text-xs text-gray-500">Category</legend>
+					<select name="listId" class="select w-full" bind:value={listId}>
+						{#each habitLists as list}
+							<option value={list.id}>{list.name}</option>
+						{/each}
+					</select>
+				</div>
+				<div>
+					<legend class="fieldset-legend mt-2 text-xs text-gray-500">Start time</legend>
+					<input type="time" class="input w-22" bind:value={startTime} name="startTime" />
+				</div>
+				<div>
+					<legend class="fieldset-legend mt-2 text-xs text-gray-500">End time</legend>
+					<input type="time" class="input w-22" bind:value={endTime} name="endTime" disabled={!startTime} />
+				</div>
 			</div>
 
 			<div>
 				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Goal</legend>
 				<div class="join w-full">
-					<input
-						name="targetValue"
-						type="number"
-						class="input join-item w-full"
-						bind:value={targetValue}
-						min="1"
-						step={unit === 'km' ? '0.1' : '1'}
-						required
-					/>
-					<select name="unit" class="select join-item w-40" bind:value={unit}>
+					{#if unit !== 'done'}
+						<input
+							name="targetValue"
+							type="number"
+							class="input join-item w-full"
+							bind:value={targetValue}
+							min="1"
+							{...unit === 'done' ? { max: 1 } : {}}
+							step={unit === 'km' ? '0.1' : '1'}
+							required
+						/>
+					{/if}
+
+					<select name="unit" class="select join-item {unit === 'done' ? 'w-full' : 'w-40'}" bind:value={unit}>
+						<option value="done">Achieve it all</option>
 						<option value="times">times</option>
 						<option value="minutes">minutes</option>
 						<option value="pages">pages</option>
@@ -130,6 +194,16 @@
 						<option value="glasses">glasses</option>
 					</select>
 				</div>
+			</div>
+
+			<div class="relative w-full">
+				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Start date</legend>
+				<input
+					type="text"
+					class="input pika-single w-full"
+					bind:this={myDatepicker}
+					value={startDate ? startDate.toISOString().split('T')[0] : ''}
+				/>
 			</div>
 
 			<div>
@@ -175,6 +249,7 @@
 			{#if editHabit}
 				<input type="hidden" name="habitId" value={editHabit.id} />
 			{/if}
+			<input type="hidden" name="startDate" value={startDate.toISOString().split('T')[0]} />
 
 			<div class="text-center">
 				<button type="submit" class="btn btn-primary mt-10"> {editHabit ? 'Save changes' : 'Create habit'} </button>
@@ -182,3 +257,24 @@
 		</form>
 	</div>
 </dialog>
+
+<style>
+	:global(.pika-single .is-today .pika-button) {
+		border-radius: 0.25rem;
+	}
+
+	:global(.pika-single .is-today .pika-button:hover) {
+		background: hsl(from var(--color-primary) h s calc(l * 0.93));
+		color: var(--color-primary-content) !important;
+	}
+
+	:global(.pika-single .is-selected .pika-button:hover) {
+		background-color: var(--color-neutral) !important;
+		color: var(--color-base-100) !important;
+	}
+
+	:global(.calendar-2) {
+		margin-left: -100% !important;
+		margin-top: -25.5em !important;
+	}
+</style>
