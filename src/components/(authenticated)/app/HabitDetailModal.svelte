@@ -140,7 +140,7 @@
 
 		<p class="mt-2 text-center text-sm">
 			{habit?.targetValue}
-			{habit?.unit}
+			{habit?.unit === 'done' ? 'to do' : habit?.unit}
 			{habit?.frequency === 'custom' ? 'per day' : habit?.frequency} | {habit?.startTime && habit?.endTime
 				? habit?.startTime + '-' + habit?.endTime + ' | '
 				: habit?.startTime

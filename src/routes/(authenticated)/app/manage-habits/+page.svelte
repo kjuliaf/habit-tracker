@@ -16,9 +16,11 @@
 	let editHabitDialog: HTMLDialogElement | null = $state(null);
 	let deleteHabitDialog: HTMLDialogElement | null = $state(null);
 	let currentHabit: any = $state(null);
+	let manageHabitModalOpen = $state(false);
 
 	function openManageHabitModal(habit: any) {
 		currentHabit = habit;
+		manageHabitModalOpen = true;
 		editHabitDialog?.showModal();
 	}
 
@@ -50,7 +52,7 @@
 	});
 </script>
 
-<ManageHabitModal bind:dialog={editHabitDialog} {data} editHabit={currentHabit} />
+<ManageHabitModal bind:dialog={editHabitDialog} {data} editHabit={currentHabit} bind:manageHabitModalOpen />
 <DeleteHabitModal bind:dialog={deleteHabitDialog} deleteHabit={currentHabit} />
 
 <div class="mx-8 flex flex-col items-center justify-center">

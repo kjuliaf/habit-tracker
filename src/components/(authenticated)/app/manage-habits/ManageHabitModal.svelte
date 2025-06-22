@@ -3,7 +3,7 @@
 	import { enhance } from '$app/forms';
 	import { browser } from '$app/environment';
 
-	let { data, dialog = $bindable(), editHabit } = $props();
+	let { data, dialog = $bindable(), editHabit, manageHabitModalOpen = $bindable(false) } = $props();
 	let habitLists = data?.habitLists || [];
 
 	let icon = $state<string>('none');
@@ -13,12 +13,11 @@
 	let targetValue = $state<number>(1);
 	let unit = $state<string>('done');
 	let startDate = $state<Date>(new Date());
+	let originalStartDate = $state<Date | null>(null);
 	let startTime = $state<string>();
 	let endTime = $state<string>('');
 	let picker: any;
-
 	let frequency: string = $state('daily');
-
 	let days: string[] = $state([]);
 
 	$effect(() => {
@@ -30,6 +29,7 @@
 			targetValue = editHabit?.targetValue || 1;
 			unit = editHabit?.unit || 'done';
 			startDate = editHabit?.startDate ? new Date(editHabit.startDate) : new Date();
+			originalStartDate = editHabit?.startDate ? new Date(editHabit.startDate) : null;
 			startTime = editHabit?.startTime || '';
 			endTime = editHabit?.endTime || '';
 			frequency = editHabit?.frequency || 'daily';
@@ -108,10 +108,21 @@
 			};
 		}
 	});
+
+	$effect(() => {
+		if (startTime === '') {
+			endTime = '';
+		}
+	});
 </script>
 
 <!-- Open the modal using ID.showModal() method -->
-<dialog bind:this={dialog} class="modal">
+<dialog
+	bind:this={dialog}
+	class="modal"
+	onclose={() => setTimeout(() => (manageHabitModalOpen = false), 100)}
+	oncancel={() => setTimeout(() => (manageHabitModalOpen = false), 100)}
+>
 	<div class="modal-box max-w-xl">
 		<form method="dialog">
 			<button class="btn btn-md btn-circle btn-ghost absolute top-2 right-2 mt-5 mr-2 text-xl">✕</button>
@@ -135,7 +146,9 @@
 			class="py-6"
 		>
 			<div class="flex">
-				<IconPicker bind:icon />
+				{#if manageHabitModalOpen}
+					<IconPicker bind:icon />
+				{/if}
 
 				<div class="w-full">
 					<legend class="fieldset-legend text-xs text-gray-500">Habit name</legend>
@@ -205,6 +218,9 @@
 					value={startDate ? startDate.toISOString().split('T')[0] : ''}
 				/>
 			</div>
+			{#if originalStartDate && originalStartDate.getDate() < startDate.getDate()}
+				<p class="text-xs text-red-600">*Any habit tracking prior to the new start date will be deleted</p>
+			{/if}
 
 			<div>
 				<legend class="fieldset-legend mt-2 text-xs text-gray-500">Frequency</legend>

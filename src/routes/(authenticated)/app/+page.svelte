@@ -161,9 +161,9 @@
 
 	function getResult(habit: any) {
 		if (habit.frequency === 'weekly') {
-			return getWeeklyAccumulated(habit).toFixed(1);
+			return Number(getWeeklyAccumulated(habit).toFixed(1));
 		} else if (habit.frequency === 'monthly') {
-			return getMonthlyAccumulated(habit).toFixed(1);
+			return Number(getMonthlyAccumulated(habit).toFixed(1));
 		} else {
 			return habit.completions[selectedDate.toISOString().split('T')[0]]?.value || 0;
 		}
@@ -196,6 +196,14 @@
 
 	function getBackgroundImage() {
 		return "bg-[url('/app-background.png')]";
+	}
+
+	function splitLastWord(text: string) {
+		if (!text) return { first: '', last: '' };
+		const words = text.trim().split(/\s+/);
+		const last = words.pop();
+		const first = words.join(' ').trim(); // <-- trim here
+		return { first, last };
 	}
 </script>
 
@@ -271,17 +279,27 @@
 									<div class="flex flex-col items-baseline justify-between gap-1 sm:flex-row sm:items-center">
 										<div>
 											<div class="flex gap-2">
-												<p>{habit.name}</p>
-												{#if habit.startTime}
-													<div class="flex items-center gap-0.5 text-[0.6875rem] opacity-60">
-														<MdiClockOutline class="h-3 w-3" />
-														<span class="-mb-0.25">{habit.startTime}{habit.endTime ? '–' + habit.endTime : ''} </span>
-													</div>
-												{/if}
+												<p class="text-sm">
+													{#if splitLastWord(habit.name).first}
+														{splitLastWord(habit.name).first}&nbsp;
+													{/if}<span class="align-baseline whitespace-nowrap">
+														<span>{splitLastWord(habit.name).last}</span>
+														{#if habit.startTime}
+															<span
+																class="ml-1 inline-flex items-center gap-0.5 align-middle text-[0.6875rem] opacity-60"
+															>
+																<MdiClockOutline class="mb-px h-3 w-3" />
+																<span>
+																	{habit.startTime}{habit.endTime ? '–' + habit.endTime : ''}
+																</span>
+															</span>
+														{/if}
+													</span>
+												</p>
 											</div>
 
-											<div class="text-xs opacity-60">
-												{getResult(habit)}/{habit.targetValue}
+											<div class="mt-0.25 text-xs opacity-60">
+												{getResult(habit)?.toLocaleString('sv-SE')}/{habit.targetValue?.toLocaleString('sv-SE')}
 												{habit.unit}
 												{habit.frequency === 'weekly'
 													? 'this week'
@@ -295,14 +313,18 @@
 												{#if habit.completions[selectedDate
 														.toISOString()
 														.split('T')[0]] && calcProgress(habit) > 0 && (habit.frequency === 'weekly' || habit.frequency === 'monthly')}
-													<div class="badge badge-xs badge-neutral badge-outline -mr-2 min-w-max opacity-60">
+													<div
+														class="badge badge-xs badge-neutral badge-outline -mr-2 min-w-max whitespace-nowrap opacity-60"
+													>
 														<StreamlineCheckSolid class="-mr-1 h-2 w-2" />
-														{habit.completions[selectedDate.toISOString().split('T')[0]].value}
+														{habit.completions[selectedDate.toISOString().split('T')[0]]?.value?.toLocaleString(
+															'sv-SE'
+														)}
 														{habit.unit} today
 													</div>
 												{/if}
 												{#if calcProgress(habit) >= 100}
-													<div class="badge badge-xs badge-success badge-outline -mr-2">
+													<div class="badge badge-xs badge-success badge-outline -mr-2 whitespace-nowrap">
 														<StreamlineCheckSolid class="-mr-1 h-2 w-2" />
 														Completed
 													</div>
@@ -312,7 +334,7 @@
 														.split('T')[0]] && habit.completions[selectedDate
 															.toISOString()
 															.split('T')[0]].entryMethod === 'uncompleted'}
-													<div class="badge badge-xs badge-error badge-outline -mr-2">
+													<div class="badge badge-xs badge-error badge-outline -mr-2 whitespace-nowrap">
 														<StreamlineDelete1Solid class="-mr-1 h-1.5 w-1.5" />
 														Not completed
 													</div>

@@ -37,7 +37,7 @@ export const actions = {
 
 			const unit = formData.get('unit') as string;
 			const target = formData.get('targetValue') as string;
-			const targetValue = unit === 'km' ? parseFloat(target) : parseInt(target, 10);
+			const targetValue = unit === 'done' ? 1 : unit === 'km' ? parseFloat(target) : parseInt(target, 10);
 
 			const habitData = {
 				userId: user.id,
