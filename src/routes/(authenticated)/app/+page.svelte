@@ -2,15 +2,15 @@
 	let { data } = $props();
 	let user = data?.session?.user;
 	let firstName = user?.user_metadata?.first_name;
-	import Datepicker from '../../../components/(authenticated)/Datepicker.svelte';
-	import HabitDetailModal from '../../../components/(authenticated)/app/HabitDetailModal.svelte';
+	import Datepicker from '../../../components/(authenticated)/app/habits/Datepicker.svelte';
+	import HabitDetailModal from '../../../components/(authenticated)/app/habits/habit-details/HabitDetailModal.svelte';
 	let habitsGroupedByList = data?.habitsGroupedByList || [];
 	import { browser } from '$app/environment';
-	import Greeting from '../../../components/(authenticated)/Greeting.svelte';
-	import ProgressCircle from '../../../components/(authenticated)/ProgressCircle.svelte';
-	import HabitTitle from '../../../components/(authenticated)/HabitTitle.svelte';
-	import HabitCompletionInfo from '../../../components/(authenticated)/HabitCompletionInfo.svelte';
-	import HabitListTitle from '../../../components/(authenticated)/HabitListTitle.svelte';
+	import Greeting from '../../../components/(authenticated)/app/habits/Greeting.svelte';
+	import ProgressCircle from '../../../components/(authenticated)/app/habits/HabitProgressCircle.svelte';
+	import HabitTitle from '../../../components/(authenticated)/app/habits/HabitTitle.svelte';
+	import HabitCompletionInfo from '../../../components/(authenticated)/app/habits/HabitCompletionInfo.svelte';
+	import HabitListTitle from '../../../components/(authenticated)/app/habits/HabitListTitle.svelte';
 	import type { Habit } from '$lib/utils/habitUtils';
 
 	let currentHabit: Habit | null = $state(null);

@@ -70,7 +70,7 @@ function getMonthlyAccumulated(habit: Habit, selectedDate: Date) {
 	}, 0);
 }
 
-function getPrevWeekDays(date: Date) {
+export function getPrevWeekDays(date: Date) {
 	const days = [];
 	const startOfWeek = new Date(date);
 	const dayOfWeek = date.getDay();
@@ -87,7 +87,7 @@ function getPrevWeekDays(date: Date) {
 	return days;
 }
 
-function getPrevMonthDays(date: Date) {
+export function getPrevMonthDays(date: Date) {
 	const days = [];
 	const year = date.getFullYear();
 	const month = date.getMonth();

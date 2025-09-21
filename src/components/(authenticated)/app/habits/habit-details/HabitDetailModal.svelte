@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { iconRegistry } from '$lib/utils/iconRegistry';
 	import { enhance } from '$app/forms';
+	import { getPrevMonthDays, getPrevWeekDays } from '$lib/utils/habitUtils';
 
 	let { dialog = $bindable(), habit, date } = $props();
 
@@ -64,35 +65,6 @@
 						? 'pp.'
 						: habit?.unit
 	);
-
-	function getPrevWeekDays(date: Date) {
-		const days = [];
-		const startOfWeek = new Date(date);
-		const dayOfWeek = date.getDay();
-		const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-		startOfWeek.setDate(date.getDate() + diff);
-
-		for (let i = 0; i < 7; i++) {
-			const day = new Date(startOfWeek);
-			day.setDate(startOfWeek.getDate() + i);
-			if (day <= date) {
-				days.push(day.toISOString().split('T')[0]);
-			}
-		}
-		return days;
-	}
-
-	function getPrevMonthDays(date: Date) {
-		const days = [];
-		const year = date.getFullYear();
-		const month = date.getMonth();
-
-		for (let day = 1; day <= date.getDate(); day++) {
-			const currentDay = new Date(year, month, day, 12, 0, 0);
-			days.push(currentDay.toISOString().split('T')[0]);
-		}
-		return days;
-	}
 
 	let weekDays = $derived(getPrevWeekDays(date));
 	let monthDays = $derived(getPrevMonthDays(date));
