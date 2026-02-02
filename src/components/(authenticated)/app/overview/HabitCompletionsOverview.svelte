@@ -1,22 +1,16 @@
 <script lang="ts">
 	import StreamlineCheckSolid from '~icons/streamline/check-solid';
 
-	type Frequency = 'daily' | 'weekly' | 'monthly';
-
-	type Days = string[] | null;
-
-	type Completions =
-		| Record<string, { completedDate: string | Date }>
-		| Array<{ completedDate: string | Date }>
-		| null
-		| undefined;
-
-	let { completions, viewMonth, frequency, days } = $props() as {
-		completions: Completions;
-		viewMonth: Date;
-		frequency: Frequency;
-		days: Days;
+	type Completion = {
+		id: number;
+		userId: string;
+		habitId: number;
+		completedDate: string | Date;
+		value: number | null;
+		entryMethod: string | null;
 	};
+
+	let { completions, viewMonth, frequency, days } = $props();
 
 	const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -62,8 +56,8 @@
 		if (Array.isArray(completions)) {
 			for (const c of completions) set.add(completionDateToYMD(c.completedDate));
 		} else {
-			for (const [key, c] of Object.entries(completions)) {
-				const ymd = c?.completedDate ? completionDateToYMD(c.completedDate) : key;
+			for (const [key, c] of Object.entries(completions as Record<string, Completion>)) {
+				const ymd = c.completedDate ? completionDateToYMD(c.completedDate) : key;
 				set.add(ymd);
 			}
 		}

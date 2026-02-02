@@ -3,13 +3,14 @@
 	import { browser } from '$app/environment';
 	import { isMorning, isAfternoon, isEvening } from '$lib/utils/time';
 
-	let { visibleHabitsGroupedByList, list } = $props();
+	let { data, visibleHabitsGroupedByList, list } = $props();
 
 	let categoriesOpen = $state<number[]>([]);
+	const STORAGE_KEY = `categoriesOpen${data.user?.id}`;
 
 	$effect(() => {
 		if (browser) {
-			const saved = sessionStorage.getItem('categoriesOpen');
+			const saved = localStorage.getItem(STORAGE_KEY);
 			if (saved) {
 				categoriesOpen = JSON.parse(saved);
 			} else {
@@ -46,7 +47,7 @@
 			categoriesOpen = categoriesOpen.filter((order) => order !== list.displayOrder);
 		}
 		if (browser) {
-			sessionStorage.setItem('categoriesOpen', JSON.stringify(categoriesOpen));
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(categoriesOpen));
 		}
 	}}
 />

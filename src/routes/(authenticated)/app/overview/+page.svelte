@@ -2,8 +2,11 @@
 	import HabitCompletionsOverview from '../../../../components/(authenticated)/app/overview/HabitCompletionsOverview.svelte';
 	import { iconRegistry } from '$lib/utils/iconRegistry';
 	import { browser } from '$app/environment';
+	import AppBackground from '../../../../components/(authenticated)/app/habits/AppBackground.svelte';
 
 	let { data } = $props();
+	const STORAGE_KEY = `viewMonth${data.user?.id}`;
+
 	let habitsGroupedByList = data?.habitsGroupedByList || [];
 
 	const today = new Date();
@@ -12,7 +15,7 @@
 
 	$effect(() => {
 		if (browser) {
-			const saved = sessionStorage.getItem('viewMonth');
+			const saved = localStorage.getItem(STORAGE_KEY);
 			if (saved) {
 				viewMonth = new Date(saved);
 			}
@@ -22,7 +25,7 @@
 
 	$effect(() => {
 		if (browser && viewMonth && isLoaded) {
-			sessionStorage.setItem('viewMonth', viewMonth.toISOString());
+			localStorage.setItem(STORAGE_KEY, viewMonth.toISOString());
 		}
 	});
 

@@ -12,15 +12,17 @@
 	import HabitCompletionInfo from '../../../components/(authenticated)/app/habits/HabitCompletionInfo.svelte';
 	import HabitListTitle from '../../../components/(authenticated)/app/habits/HabitListTitle.svelte';
 	import type { Habit } from '$lib/utils/habitUtils';
+	import AppBackground from '../../../components/(authenticated)/app/habits/AppBackground.svelte';
 
 	let currentHabit: Habit | null = $state(null);
 	let isLoaded = $state(false);
 	let dialog: HTMLDialogElement | null = $state(null);
 	let selectedDate = $state(new Date());
+	const STORAGE_KEY = `selectedDate${data.user?.id}`;
 
 	$effect(() => {
 		if (browser) {
-			const saved = sessionStorage.getItem('selectedDate');
+			const saved = localStorage.getItem(STORAGE_KEY);
 			if (saved) {
 				selectedDate = new Date(saved);
 			}
@@ -30,7 +32,7 @@
 
 	$effect(() => {
 		if (browser && selectedDate && isLoaded) {
-			sessionStorage.setItem('selectedDate', selectedDate.toISOString());
+			localStorage.setItem(STORAGE_KEY, selectedDate.toISOString());
 		}
 	});
 
@@ -79,12 +81,15 @@
 {#if isLoaded}
 	<HabitDetailModal bind:dialog habit={currentHabit} date={selectedDate} />
 
-	<Greeting {firstName} />
+	<div class="flex flex-col items-center justify-center">
+		<Greeting {firstName} />
+		<AppBackground />
+	</div>
 	<div class="mx-5 mb-30 flex flex-col items-center justify-center">
 		<div class="mt-6"></div>
 		{#each visibleHabitsGroupedByList as list}
 			<div class="bg-base-100 collapse-arrow collapse mt-3 max-w-140 rounded-xl border-[1.5px] border-(--border-color)">
-				<HabitListTitle visibleHabitsGroupedByList={visibleHabitsGroupedByList} list={list} />
+				<HabitListTitle {data} {visibleHabitsGroupedByList} {list} />
 
 				<div class="collapse-content text-sm">
 					<ul class="list">
