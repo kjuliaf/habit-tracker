@@ -3,11 +3,6 @@ import { db } from '$lib/db';
 import { habits, habitCompletions } from '$lib/db/schema';
 import { eq, max, sql, and, gt, lt } from 'drizzle-orm';
 
-export async function load({ parent }) {
-	const parentData = await parent();
-	return parentData;
-}
-
 export const actions = {
 	createHabit: async ({ request, locals }) => {
 		try {

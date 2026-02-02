@@ -15,7 +15,7 @@
 
 	function getBackgroundImage() {
 		if (isMorning()) {
-			return "bg-[url('/app-background.png')]";
+			return "bg-[url('/morning-background.png')]";
 		} else if (isAfternoon()) {
 			return "bg-[url('/afternoon-background.png')]";
 		} else {
